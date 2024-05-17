@@ -13,6 +13,36 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
+    - name: Update Version Code and Name
+      run: |
+        # Ruta al archivo build.gradle
+        gradle_file="android/app/build.gradle"
+
+        # Extrae los valores actuales de versionCode y versionName
+        versionCode=$(grep "versionCode" $gradle_file | sed 's/[^0-9]*//g')
+        versionName=$(grep "versionName" $gradle_file | sed 's/[^0-9.]*//g')
+
+        # Incrementa el versionCode
+        newVersionCode=$(($versionCode + 1))
+
+        # Define el nuevo versionName
+        newVersionName="1.0.1" # Actualiza esto según necesites
+
+        # Actualiza los valores en el archivo build.gradle
+        sed -i "s/versionCode $versionCode/versionCode $newVersionCode/" $gradle_file
+        sed -i "s/versionName \"$versionName\"/versionName \"$newVersionName\"/" $gradle_file
+
+        # Salida de los nuevos valores para verificación
+        echo "New versionCode: $newVersionCode"
+        echo "New versionName: $newVersionName"
+
+    - name: Commit Changes
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git add android/app/build.gradle
+        git commit -m "Update versionCode to $newVersionCode and versionName to $newVersionName"
+        git push
 
     - name: Setup JDK 20
       uses: actions/setup-java@v3
