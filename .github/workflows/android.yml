@@ -49,3 +49,11 @@ jobs:
           name: app-release.apk
           path: ./android/app/build/outputs/apk/release/app-release.apk
           retention-days: 3
+
+      - name: Deploy to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          releaseFile: ./android/app/build/outputs/apk/release/app-release.apk
+          track: production  # puedes usar 'alpha', 'beta', 'production' o 'internal'
+          status: completed  # opcional, el estado de la versión ('completed', 'draft', 'halted', 'inProgress')
