@@ -57,7 +57,7 @@ jobs:
         gradle-home-cache-cleanup: true
 
     - name: Grant execute permission for Gradlew
-      run: chmod +x ./gradlew
+      run: chmod +x gradlew
 
     - name: Build Release
       run: ./gradlew bundleRelease
