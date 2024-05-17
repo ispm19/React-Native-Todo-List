@@ -3,12 +3,11 @@ name: "Build Android app"
 on:
   push:
     branches:
-      - "feature/cicd"
+      - "master"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: production
     
     steps:
       - name: Checkout repository
