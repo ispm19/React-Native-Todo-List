@@ -13,6 +13,7 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
+      
     - name: Update Version Code and Name
       run: |
         # Ruta al archivo build.gradle
@@ -55,12 +56,5 @@ jobs:
       with:
         gradle-home-cache-cleanup: true
 
-    - name: Bump Version Code
-      uses: chkfung/android-version-actions@v1.2.1
-      with:
-        gradlePath: app/build.gradle.kts
-        versionCode: ${{ github.run_number }}
-        versionName: 1.0.0
-
     - name: Build Release
-      run: gradle bundleRelease
+      run: ./gradlew bundleRelease
