@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      
+
     - name: Update Version Code and Name
       run: |
         # Ruta al archivo build.gradle
@@ -55,6 +55,9 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         gradle-home-cache-cleanup: true
+
+    - name: Grant execute permission for Gradlew
+      run: chmod +x ./gradlew
 
     - name: Build Release
       run: ./gradlew bundleRelease
