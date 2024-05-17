@@ -50,6 +50,9 @@ jobs:
           path: ./android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 3
 
+      - name: Verificar valor de GOOGLE_PLAY_SERVICE_ACCOUNT_JSON
+        run: echo "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"
+
       - name: Deploy to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
