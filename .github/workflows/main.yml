@@ -1,4 +1,4 @@
-name: Deploy Android App
+name: Build Android app
 
 on:
   push:
@@ -7,22 +7,54 @@ on:
 
 jobs:
   build:
-    name: Build Signed AAB
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Setup JDK 20
+      - name: Install Java
         uses: actions/setup-java@v3
         with:
-          distribution: temurin
-          java-version: 20
+          java-version: 17
+          distribution: adopt
+          cache: gradle
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
 
-      - name: Setup Gradle Cache
-        uses: gradle/gradle-build-action@v2
+      - name: Setup Node  
+        uses: actions/setup-node@v3
         with:
-          gradle-home-cache-cleanup: true
+          node-version: '18'
+          cache: 'yarn'
+
+      - name: Run Yarn Install
+        run: |
+          npm i -g corepack
+          yarn install
+
+      - name: Build application
+        run: |
+          cd android
+          ./gradlew assembleRelease
+
+      - name: List generated APKs
+        run: |
+          ls -R ./android/app/build/outputs/
+
+      - name: Upload application
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.apk
+          path: ./android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 3
+
+      - name: Deploy to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.ispm19.todolist  # Reemplaza con el nombre de paquete real
+          releaseFile: ./android/app/build/outputs/apk/release/app-release.apk
+          track: production  # Puedes usar 'alpha', 'beta', 'production' o 'internal'
+          status: completed  # Opcional, el estado de la versión ('completed', 'draft', 'halted', 'inProgress')
