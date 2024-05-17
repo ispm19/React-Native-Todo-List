@@ -1,60 +1,36 @@
-name: "Build Android app"
+name: Deploy Android App
 
 on:
   push:
     branches:
-      - ""
+      - "master"
 
 jobs:
   build:
+    name: Build Signed AAB
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-      - name: Install Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: adopt
-          cache: gradle
+    - name: Setup JDK 20
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 20
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
+    - name: Setup Gradle Cache
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-home-cache-cleanup: true
 
-      - name: Setup Node  
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'yarn'
+    - name: Bump Version Code
+      uses: chkfung/android-version-actions@v1.2.1
+      with:
+        gradlePath: app/build.gradle.kts
+        versionCode: ${{ github.run_number }}
+        versionName: 1.0.0
 
-      - name: Run Yarn Install
-        run: |
-             npm i -g corepack
-             yarn install
-             
-      - name: Build application
-        run: |
-          cd android
-          ./gradlew assembleRelease
-
-      - name: List generated APKs
-        run: |
-          ls -R ./android/app/build/outputs/
-
-      - name: Upload application
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release.apk
-          path: ./android/app/build/outputs/apk/release/app-release.apk
-          retention-days: 3
-
-      - name: Deploy to Google Play
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.todolist
-          releaseFile: ./android/app/build/outputs/apk/release/app-release.apk
-          track: production  # puedes usar 'alpha', 'beta', 'production' o 'internal'
-          status: completed  # opcional, el estado de la versión ('completed', 'draft', 'halted', 'inProgress')
+    - name: Build Release
+      run: gradle bundleRelease
