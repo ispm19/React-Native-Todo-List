@@ -19,10 +19,14 @@ jobs:
           
       - name: List directory contents
         run: ls -l
-        working-directory: ${{ github.workspace }}
+        working-directory: ${{ github.workspace }}/android
       
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: ${{ github.workspace }}/android
+
+      - name: Change directory to android
+        run: cd android
         working-directory: ${{ github.workspace }}
       
       - name: Setup Gradle Cache
@@ -39,6 +43,7 @@ jobs:
       
       - name: Build prodRelease
         run: ./gradlew bundleRelease
+        working-directory: ${{ github.workspace }}/android
       
       - name: Sign AAb
         id: sign
