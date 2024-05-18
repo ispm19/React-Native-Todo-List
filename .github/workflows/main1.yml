@@ -16,6 +16,10 @@ jobs:
         with:
           distribution: temurin
           java-version: 20
+          
+      - name: List directory contents
+        run: ls -l
+        working-directory: ${{ github.workspace }}
       
       - name: Make gradlew executable
         run: chmod +x ./gradlew
