@@ -19,6 +19,7 @@ jobs:
       
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: ${{ github.workspace }}
       
       - name: Setup Gradle Cache
         uses: gradle/gradle-build-action@v2
