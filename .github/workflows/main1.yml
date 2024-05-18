@@ -40,11 +40,12 @@ jobs:
           gradlePath: ${{ github.workspace }}/android/build.gradle
           versionCode: '${{ github.run_number }}'
           versionName: 1.0.0
-      
-      - name: Build prodRelease
-        run: ./gradlew bundleRelease
-        working-directory: ${{ github.workspace }}/android/app
-      
+          
+      - name: Build application
+        run: |
+          cd android
+          ./gradlew assembleRelease
+          
       - name: Sign AAb
         id: sign
         uses: r0adkll/sign-android-release@v1
