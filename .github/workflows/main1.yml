@@ -43,7 +43,7 @@ jobs:
       
       - name: Build prodRelease
         run: ./gradlew bundleRelease
-        working-directory: ${{ github.workspace }}/android
+        working-directory: ${{ github.workspace }}/android/app
       
       - name: Sign AAb
         id: sign
