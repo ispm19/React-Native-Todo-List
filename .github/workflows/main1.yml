@@ -16,6 +16,11 @@ jobs:
         with:
           distribution: temurin
           java-version: 20
+
+      - name: Run Yarn Install
+        run: |
+          npm i -g corepack
+          yarn install
           
       - name: List directory contents
         run: ls -l
