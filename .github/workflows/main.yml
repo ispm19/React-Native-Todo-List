@@ -23,7 +23,7 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Setup Node  
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18'
@@ -34,11 +34,18 @@ jobs:
           npm i -g corepack
           yarn install
 
+      - name: Setup Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > my-release-key.keystore
+
       - name: Build application
         run: |
           cd android
-          ./gradlew bundleRelease 
-
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=my-release-key.keystore \
+            -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEY_ALIAS }} \
+          
       - name: List generated bundles
         run: |
           ls -R ./android/app/build/outputs/bundle/
@@ -50,14 +57,11 @@ jobs:
           path: ./android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 3
 
-      - name: Verificar valor de GOOGLE_PLAY_SERVICE_ACCOUNT_JSON
-        run: echo "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"
-
       - name: Deploy to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.ispm19.todolist  # Reemplaza con el nombre de paquete real
+          packageName: com.projecttwo  # Reemplaza con el nombre de paquete real
           releaseFiles: ./android/app/build/outputs/bundle/release/app-release.aab
           track: production  # Puedes usar 'alpha', 'beta', 'production' o 'internal'
           status: completed  # Opcional, el estado de la versión ('completed', 'draft', 'halted', 'inProgress')
