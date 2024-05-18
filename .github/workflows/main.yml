@@ -41,7 +41,7 @@ jobs:
       - name: Build application
         run: |
           cd android
-          ./gradlew assembleRelease
+          ./gradlew bundleRelease
           
       - name: List generated bundles
         run: |
