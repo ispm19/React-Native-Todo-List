@@ -3,7 +3,7 @@ name: Build Android app
 on:
   push:
     branches:
-      - master
+      - 
 
 jobs:
   build:
@@ -38,19 +38,10 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > my-release-key.keystore
           
-      - name: Export Keystore Path
-        run: echo "ANDROID_KEYSTORE_PATH=$(pwd)/my-release-key.keystore" >> $GITHUB_ENV
-        
       - name: Build application
         run: |
           cd android
           ./gradlew bundleRelease
-        env:
-          ANDROID_KEYSTORE_PATH: ${{ env.ANDROID_KEYSTORE_PATH }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
-
           
       - name: List generated bundles
         run: |
