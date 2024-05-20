@@ -77,4 +77,4 @@ jobs:
           packageName: com.projecttwo  # Reemplaza con el nombre de paquete real
           releaseFiles: android/app/build/outputs/apk/release/app-release.apk
           track: production  # Puedes usar 'alpha', 'beta', 'production' o 'internal'
-          status:
+          status: completed  # Opcional, el estado de la versión ('completed', 'draft', 'halted', 'inProgress')
