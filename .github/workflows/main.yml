@@ -3,7 +3,7 @@ name: Build Android app
 on:
   push:
     branches:
-      - master
+      - "master"
 
 jobs:
   build:
@@ -34,9 +34,16 @@ jobs:
           npm i -g corepack
           yarn install
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 30
+          build-tools: 30.0.3
+          ndk: 21.4.7075529
+
       - name: Setup Keystore
         run: |
-          echo "${{ secrets.UPLOAD_KEYSTORE }}" | base64 --decode > upload-keystore.jks
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > my-release-key.keystore
 
       - name: Build application
         run: |
@@ -45,25 +52,17 @@ jobs:
 
       - name: Align APK
         run: |
-          ${ANDROID_SDK_ROOT}/build-tools/30.0.3/zipalign -v 4 android/app/build/outputs/apk/release/app-release-unsigned.apk android/app/build/outputs/apk/release/app-release-aligned.apk
+          $ANDROID_HOME/build-tools/30.0.3/zipalign -v 4 android/app/build/outputs/apk/release/app-release-unsigned.apk android/app/build/outputs/apk/release/app-release-aligned.apk
 
       - name: Sign APK
-        env:
-          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
-          UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
-          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: |
-          ${ANDROID_SDK_ROOT}/build-tools/30.0.3/apksigner sign --ks upload-keystore.jks --ks-key-alias $UPLOAD_KEY_ALIAS --ks-pass env:UPLOAD_KEYSTORE_PASSWORD --key-pass env:UPLOAD_KEY_PASSWORD --out android/app/build/outputs/apk/release/app-release-signed.apk android/app/build/outputs/apk/release/app-release-aligned.apk
+          $ANDROID_HOME/build-tools/30.0.3/apksigner sign --ks my-release-key.keystore --ks-key-alias ${{ secrets.ANDROID_KEY_ALIAS }} --ks-pass pass:${{ secrets.ANDROID_KEYSTORE_PASSWORD }} --key-pass pass:${{ secrets.ANDROID_KEY_PASSWORD }} --out android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/app-release-aligned.apk
 
-      - name: List generated APKs
-        run: |
-          ls -R ./android/app/build/outputs/apk/release/
-
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v2
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
-          name: app-release-signed.apk
-          path: android/app/build/outputs/apk/release/app-release-signed.apk
+          name: app-release.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 3
 
       - name: Deploy to Google Play
@@ -71,6 +70,6 @@ jobs:
         with:
           serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: com.projecttwo  # Reemplaza con el nombre de paquete real
-          releaseFiles: android/app/build/outputs/apk/release/app-release-signed.apk
+          releaseFiles: android/app/build/outputs/apk/release/app-release.apk
           track: production  # Puedes usar 'alpha', 'beta', 'production' o 'internal'
           status: completed  # Opcional, el estado de la versión ('completed', 'draft', 'halted', 'inProgress')
