@@ -36,10 +36,10 @@ jobs:
 
       - name: Setup Keystore
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > my-release-key.jks
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > my-release-key.keystore
           
       - name: Export Keystore Path
-        run: echo "ANDROID_KEYSTORE_PATH=$(pwd)/my-release-key.jks" >> $GITHUB_ENV
+        run: echo "ANDROID_KEYSTORE_PATH=$(pwd)/my-release-key.keystore" >> $GITHUB_ENV
         
       - name: Build application
         run: |
