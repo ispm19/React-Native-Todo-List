@@ -82,6 +82,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -89,15 +90,25 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('UPLOAD_KEYSTORE') &&
+                project.hasProperty('UPLOAD_KEY_ALIAS') &&
+                project.hasProperty('UPLOAD_KEY_PASSWORD') &&
+                project.hasProperty('UPLOAD_KEYSTORE_PASSWORD')) {
+                storeFile file(project.UPLOAD_KEYSTORE)
+                storePassword project.UPLOAD_KEYSTORE_PASSWORD
+                keyAlias project.UPLOAD_KEY_ALIAS
+                keyPassword project.UPLOAD_KEY_PASSWORD
+            }
+        }
     }
+
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
