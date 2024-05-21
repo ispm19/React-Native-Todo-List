@@ -1,4 +1,4 @@
-package com.projecttwo
+package com.projecttwo.ispmgodrd
 
 import android.app.Application
 import com.facebook.react.PackageList
