@@ -38,6 +38,18 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
           
+      - name: Increment version code and name
+        run: |
+          cd android/app
+          # Increment versionCode
+          sed -i -e 's/versionCode \([0-9]*\)/versionCode $((\1 + 1))/' build.gradle
+          # Increment versionName
+          oldVersionName=$(grep "versionName" build.gradle | awk '{print $2}' | tr -d '"')
+          IFS='.' read -ra ver <<< "$oldVersionName"
+          newVersionName="${ver[0]}.${ver[1]}.$((${ver[2]} + 1))"
+          sed -i -e "s/versionName \".*\"/versionName \"$newVersionName\"/" build.gradle
+          cd ../..
+          
       - name: Build application
         env:
           UPLOAD_KEYSTORE: keystoreupload.keystore
