@@ -1,4 +1,4 @@
-package com.projecttwo
+package com.projecttwo.ispmgodrd
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
