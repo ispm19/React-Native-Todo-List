@@ -43,11 +43,11 @@ jobs:
 
       - name: Setup Keystore
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > my-release-key.keystore
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
 
       - name: Build application
         env:
-          UPLOAD_KEYSTORE: my-release-key.keystore
+          UPLOAD_KEYSTORE: keystoreupload.keystore
           UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
