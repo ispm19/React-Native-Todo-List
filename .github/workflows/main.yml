@@ -34,26 +34,18 @@ jobs:
           npm i -g corepack
           yarn install
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
-        with:
-          api-level: 30
-          build-tools: 30.0.3
-          ndk: 21.4.7075529
+      - name: Setup Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
           
       - name: Build application
         env:
           UPLOAD_KEYSTORE: keystoreupload.keystore
           UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           cd android
           ./gradlew assembleRelease
-          
-      - name: Sign APK
-        run: |
-          $ANDROID_HOME/build-tools/30.0.3/apksigner sign --ks my-release-key.keystore --ks-key-alias ${{ secrets.ANDROID_KEY_ALIAS }} --ks-pass pass:${{ secrets.ANDROID_KEYSTORE_PASSWORD }} --key-pass pass:${{ secrets.ANDROID_KEY_PASSWORD }} --out android/app/build/outputs/apk/release/app-release.apk android/app/build/outputs/apk/release/app-release-aligned.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -61,7 +53,15 @@ jobs:
           name: app-release.apk
           path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 3
-
+          
+      - name: Sign Release
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: android/app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          
       - name: Deploy to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
