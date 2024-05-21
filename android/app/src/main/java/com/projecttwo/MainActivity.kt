@@ -1,4 +1,4 @@
-package com.projecttwo
+package com.projecttwoispm19
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
