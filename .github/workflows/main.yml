@@ -65,11 +65,11 @@ jobs:
           signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          
+      
       - name: Deploy to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: com.projecttwoispmgodrd  # Reemplaza con el nombre de paquete real
           releaseFiles: ./android/app/build/outputs/bundle/release/app-release.aab
           track: production  # Puedes usar 'alpha', 'beta', 'production' o 'internal'
