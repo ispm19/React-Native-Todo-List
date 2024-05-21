@@ -66,17 +66,11 @@ jobs:
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           
-  deploy:
-    name: Deploy aab to Playstore
-    needs: Build
-    runs-on: ubuntu-latest
-      
-    steps:
       - name: Deploy to Google Play
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: com.projecttwo.ispmgodrd  # Reemplaza con el nombre de paquete real
           releaseFiles: ./android/app/build/outputs/bundle/release/app-release.aab
-          track: internal  # Puedes usar 'alpha', 'beta', 'production' o 'internal'
+          track: alpha  # Puedes usar 'alpha', 'beta', 'production' o 'internal'
           status: completed  # Opcional, el estado de la versión ('completed', 'draft', 'halted', 'inProgress')
