@@ -3,7 +3,7 @@ name: Build Android app
 on:
   push:
     branches:
-      - "master"
+      - ""
 
 jobs:
   build:
@@ -70,7 +70,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.projecttwoispmgodrd  # Reemplaza con el nombre de paquete real
+          packageName: com.projecttwo.ispmgodrd  # Reemplaza con el nombre de paquete real
           releaseFiles: ./android/app/build/outputs/bundle/release/app-release.aab
           track: production  # Puedes usar 'alpha', 'beta', 'production' o 'internal'
           status: completed  # Opcional, el estado de la versión ('completed', 'draft', 'halted', 'inProgress')
