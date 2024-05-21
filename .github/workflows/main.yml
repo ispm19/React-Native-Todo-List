@@ -45,19 +45,23 @@ jobs:
           UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           cd android
-          ./gradlew assembleRelease
+          ./gradlew bundleRelease
+          
+      - name: List generated bundles
+        run: |
+          ls -R ./android/app/build/outputs/bundle/
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release.apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: app-release.abb
+          path: ./android/app/build/outputs/bundle/app-release.aab
           retention-days: 3
           
       - name: Sign Release
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: android/app/build/outputs/apk/release/app-release.apk
+          releaseDirectory: ./android/app/build/outputs/bundle/app-release.aab
           signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
