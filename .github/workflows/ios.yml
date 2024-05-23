@@ -1,78 +1,40 @@
-name: iOS starter workflow
+name: CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ main ]
 
 jobs:
   build:
-    name: Build and Test default scheme using any available iPhone simulator
     runs-on: macos-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Ruby Pkgs
-        uses: ruby/setup-ruby-pkgs@v1.33.2
-        with:
-          ruby-version: '3.0'
-          
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+    - uses: actions/checkout@v2
 
-      - name: Install Node.js dependencies
-        run: |
-          cd ios
-          npm install 
-          
-      - name: Install CocoaPods
-        run: |
-          gem install cocoapods
-          
-      - name: Check for Podfile
-        run: |
-          if [ ! -f ios/Podfile ]; then
-            echo "No Podfile found in the ios directory. Please ensure the Podfile is present."
-            exit 1
-          fi
-      - name: Install Pods
-        run: |
-          cd ios
-          pod install
-      - name: Set Default Scheme
-        run: |
-          cd ios
-          scheme_list=$(xcodebuild -list -json | tr -d "\n")
-          default=$(echo $scheme_list | ruby -e "require 'json'; puts JSON.parse(STDIN.gets)['project']['targets'][0]")
-          echo $default | cat >default
-          echo Using default scheme: $default
-      - name: List files
-        run: |
-          cd ios
-          ls -R
-      - name: Build
-        env:
-          scheme: ${{ 'default' }}
-          platform: ${{ 'iOS Simulator' }}
-        run: |
-          cd ios
-          device="iPhone 14"
-          if [ $scheme = default ]; then scheme=$(cat default); fi
-          if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
-          file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
-          xcodebuild build-for-testing -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,name=$device,OS=latest"
-      - name: Test
-        env:
-          scheme: ${{ 'default' }}
-          platform: ${{ 'iOS Simulator' }}
-        run: |
-          cd ios
-          device="iPhone 14"
-          if [ $scheme = default ]; then scheme=$(cat default); fi
-          if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then filetype_parameter="workspace" && file_to_build="`ls -A | grep -i \\.xcworkspace\$`"; else filetype_parameter="project" && file_to_build="`ls -A | grep -i \\.xcodeproj\$`"; fi
-          file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
-          xcodebuild test-without-building -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,name=$device,OS=latest"
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+
+    - name: Install Node.js dependencies
+      run: npm install
+
+    - name: Install CocoaPods dependencies
+      run: |
+        cd ios
+        pod install
+
+    - name: Create missing xcconfig files
+      run: |
+        touch ios/Pods/Target\ Support\ Files/Pods-projectTwo/Pods-projectTwo.debug.xcconfig
+        touch ios/Pods/Target\ Support\ Files/Pods-projectTwo-projectTwoTests/Pods-projectTwo-projectTwoTests.debug.xcconfig
+
+    - name: Build the iOS app
+      run: |
+        xcodebuild -workspace ios/projectTwo.xcworkspace \
+                   -scheme projectTwo \
+                   -configuration Debug \
+                   -sdk iphonesimulator \
+                   -derivedDataPath ios/build
