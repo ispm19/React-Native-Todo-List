@@ -14,10 +14,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: actions/setup-ruby@v1
+      - name: Setup Ruby Pkgs
+        uses: ruby/setup-ruby-pkgs@v1.33.2
         with:
           ruby-version: '2.6'
+
       - name: Install CocoaPods
         run: |
           gem install cocoapods
