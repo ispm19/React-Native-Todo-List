@@ -1,6 +1,6 @@
-platform :android do 
+platform :android do
     desc "Release for the Android beta"
-    lane :beta do 
+    lane :beta do
       increment_version_code(
         gradle_file_path: './android/app/build.gradle'
       )
