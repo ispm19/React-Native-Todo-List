@@ -8,30 +8,29 @@ platform :android do
 
     # Obtener e incrementar versionCode y versionName
     version_code = android_get_version_code(
-      gradle_file: "android/app/build.gradle"
-    ).to_i + 1
+      gradle_file: "./app/build.gradle"
+    ) + 1
 
     version_name = android_get_version_name(
-      gradle_file: "android/app/build.gradle"
+      gradle_file: "./app/build.gradle"
     ).split('.').tap do |parts|
       parts[-1] = (parts.last.to_i + 1).to_s
     end.join('.')
 
     android_set_version_code(
-      gradle_file: "android/app/build.gradle",
+      gradle_file: "./app/build.gradle",
       version_code: version_code
     )
 
     android_set_version_name(
-      gradle_file: "android/app/build.gradle",
+      gradle_file: "./app/build.gradle",
       version_name: version_name
     )
 
-    # Configurar la firma y construir el bundle
+    # Configurar la firma
     gradle(
       task: "bundle",
       build_type: "Release",
-      project_dir: "android",  # especifica el directorio donde se encuentra gradlew
       properties: {
         "android.injected.signing.store.file" => ENV['MYAPP_UPLOAD_STORE_FILE'],
         "android.injected.signing.store.password" => ENV['MYAPP_UPLOAD_STORE_PASSWORD'],
@@ -42,7 +41,7 @@ platform :android do
 
     # Subir a Google Play Store
     upload_to_play_store(
-      track: 'internal',
+      track: 'production',
       json_key: 'C:/Users/ispm1/OneDrive/Escritorio/React-Native-Todo-List/android/testtodolist-423618-a33659dc86ef.json',
       package_name: 'com.projecttwo.ispmgodrd'
     )
