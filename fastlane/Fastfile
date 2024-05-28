@@ -1,9 +1,9 @@
 platform :android do
     desc "Release for the Android beta"
     lane :beta do
-      increment_version_code_in_gradle(
-        gradle_file_path: './android/app/build.gradle'
-      )
+      # Run the Ruby script to increment version code
+      sh "ruby increment_version_code.rb"
+      
       gradle(task: 'clean', project_dir: './android')
       gradle(task: 'bundle', bundle_type: 'Release', project_dir: './android')
       supply(track: 'beta', apk: './android/app/build/outputs/apk/release/app-release.apk')
@@ -11,13 +11,10 @@ platform :android do
   
     desc "Release for the Android production"
     lane :release do
-      increment_version_code_in_gradle(
-        gradle_file_path: './android/app/build.gradle'
-      )
-      increment_version_name_in_gradle(
-        gradle_file_path: './android/app/build.gradle',
-        bump_type: 'patch'
-      )
+      # Run the Ruby script to increment version code
+      sh "ruby increment_version_code.rb"
+  
+      # Similarly, you can create another script to increment version name if needed
       gradle(task: 'clean', project_dir: './android')
       gradle(task: 'bundle', bundle_type: 'Release', project_dir: './android', properties: {
           "android.injected.signing.store.file" => ENV['ANDROID_KEYSTORE_FILE'],
