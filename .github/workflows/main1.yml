@@ -6,7 +6,7 @@ on:
       - "master"
 
 jobs:
-  Build:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: adopt
+          distribution: 'adopt'
           cache: gradle
 
       - name: Validate Gradle wrapper
@@ -34,31 +34,23 @@ jobs:
           npm i -g corepack
           yarn install
           
-      - name: Setup Ruby Pkgs
-        # You may pin to the exact commit or the version.
-        # uses: ruby/setup-ruby-pkgs@1493c009477b19efcb54cfaf72b5f9d1fd6ba86c
-        uses: ruby/setup-ruby-pkgs@v1.33.2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
-  
-      - name: Install npm dependencies
-        run: |
-          yarn install
+
+      - name: Install Bundler
+        run: gem install bundler
+
       - name: Install Fastlane
-        run: |
-          bundle install
-          bundle update fastlane
-          
+        run: bundle install
+
       - name: Setup Keystore
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
-          
-      - name: Build and upload 
-        run: |
-          bundle exec fastlane android beta
-          env: 
-             ANDROID_KEYSTORE_FILE: keystoreupload.keystore
-             ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-             ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-             ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-             
+        run: echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
+
+      - name: Build and upload
+        env: 
+          ANDROID_KEYSTORE_FILE: keystoreupload.keystore
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: bundle exec fastlane android beta
