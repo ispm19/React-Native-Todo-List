@@ -55,6 +55,18 @@ jobs:
         run: |
           gem install fastlane -NV
           
+      - name: Install Bundler
+        run: |
+          gem install bundler
+          bundler -v
+          bundle update --bundler
+          
+      - name: Bundle install
+        run: bundle install
+        
+      - name: Setup Keystore
+        run: echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
+
       - name: Build and Deploy
         run: |
           bundle exec fastlane android deploy
@@ -65,28 +77,3 @@ jobs:
           MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           
-      - name: Install Bundler
-        run: |
-          gem install bundler
-          bundler -v
-          bundle update --bundler
-      - name: Bundle install
-        run: bundle install
-
-      - name: Install Fastlane
-        run: bundle install
-        
-      - name: Add Fastlane Plugins
-        run: |
-          fastlane add_plugin increment_version_code
-          
-      - name: Setup Keystore
-        run: echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
-
-      - name: Build and upload
-        env: 
-          ANDROID_KEYSTORE_FILE: keystoreupload.keystore
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-        run: bundle exec fastlane android beta
-        
