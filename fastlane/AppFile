@@ -1,0 +1,3 @@
+# android/fastlane/AppFile
+json_key_file("android/testtodolist-423618-a33659dc86ef.json") # Path to the json secret file -
+package_name("com.projecttwo.ispmgodrd") # app package name for android
