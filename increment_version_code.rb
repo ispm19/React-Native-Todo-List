@@ -1,10 +1,18 @@
-file_path = "./android/app/build.gradle"
-version_code_pattern = /versionCode\s+(\d+)/
-version_name_pattern = /versionName\s+"([.\d]+)"/
+# increment_version_code.rb
+require 'fileutils'
 
-gradle_file = File.read(file_path)
-new_gradle_file = gradle_file.gsub(version_code_pattern) { |match| "versionCode #{$1.to_i + 1}" }
+# Path to your project's build.gradle file
+gradle_file_path = "android/app/build.gradle"
 
-File.write(file_path, new_gradle_file)
+# Read the contents of the file
+gradle_file_content = File.read(gradle_file_path)
 
-puts "Version code incremented successfully."
+# Use a regular expression to find the versionCode line and increment it
+new_gradle_file_content = gradle_file_content.gsub(/versionCode\s+(\d+)/) do |match|
+  "versionCode #{$1.to_i + 1}"
+end
+
+# Write the new content back to the file
+File.open(gradle_file_path, "w") { |file| file.write(new_gradle_file_content) }
+
+puts "Version code incremented successfully!"

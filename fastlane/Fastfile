@@ -2,7 +2,7 @@ platform :android do
     desc "Release for the Android beta"
     lane :beta do
       # Run the Ruby script to increment version code
-      sh "ruby increment_version_code.rb"
+      sh "ruby /increment_version_code.rb"
       
       gradle(task: 'clean', project_dir: './android')
       gradle(task: 'bundle', bundle_type: 'Release', project_dir: './android')
@@ -12,7 +12,7 @@ platform :android do
     desc "Release for the Android production"
     lane :release do
       # Run the Ruby script to increment version code
-      sh "ruby increment_version_code.rb"
+      sh "ruby /increment_version_code.rb"
   
       # Similarly, you can create another script to increment version name if needed
       gradle(task: 'clean', project_dir: './android')
