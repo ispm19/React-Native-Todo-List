@@ -1,7 +1,9 @@
 platform :android do 
     desc "Release for the Android beta"
     lane :beta do 
-      increment_version_code(app_project_dir: './android/app')
+      increment_version_code(
+        gradle_file_path: './android/app/build.gradle'
+      )
       gradle(task: 'clean', project_dir: './android')
       gradle(task: 'bundle', bundle_type: 'Release', project_dir: './android')
       supply(track: 'beta', apk: './android/app/build/outputs/apk/release/app-release.apk')
@@ -9,8 +11,13 @@ platform :android do
   
     desc "Release for the Android production"
     lane :release do
-      increment_version_code(app_project_dir: './android/app')
-      increment_version_name(app_project_dir: './android/app', bump_type: 'patch')
+      increment_version_code(
+        gradle_file_path: './android/app/build.gradle'
+      )
+      increment_version_name(
+        gradle_file_path: './android/app/build.gradle',
+        bump_type: 'patch'
+      )
       gradle(task: 'clean', project_dir: './android')
       gradle(task: 'bundle', bundle_type: 'Release', project_dir: './android', properties: {
           "android.injected.signing.store.file" => ENV['ANDROID_KEYSTORE_FILE'],
