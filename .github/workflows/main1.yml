@@ -1,83 +1,61 @@
-name: Deploy
+name: Build Android app
 
 on:
   push:
     branches:
-      - ""
+      - "master"
 
 jobs:
-  build:
-    name: Build Signed AAB
+  Build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Setup JDK 20
+      - name: Install Java
         uses: actions/setup-java@v3
         with:
-          distribution: temurin
-          java-version: 20
+          java-version: 17
+          distribution: adopt
+          cache: gradle
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
 
       - name: Run Yarn Install
         run: |
           npm i -g corepack
           yarn install
-
-      - name: List directory contents
-        run: ls -l
-        working-directory: ${{ github.workspace }}/android
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-        working-directory: ${{ github.workspace }}/android
-
-      - name: Setup Gradle Cache
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-home-cache-cleanup: true
-
-      - name: Bump Version Code
-        uses: chkfung/android-version-actions@v1.2.2
-        with:
-          gradlePath: ${{ github.workspace }}/android/build.gradle
-          versionCode: '${{ github.run_number }}'
-          versionName: 1.0.0
           
-      - name: Build
+      - name: Install Fastlane
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - name: Install npm dependencies
         run: |
-          cd android
-          ./gradlew build
-
-      - name: Assemble Release Bundle
+          yarn install
+      - name: Install Fastlane
         run: |
-          cd android
-          ./gradlew bundleRelease
-      - name: Sign Release
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE }}
-          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-
-  deploy:
-    name: Deploy aab to Playstore
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download app bundle from artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: app-release.aab
-          path: app-release.aab
-      
-      - name: Publish to Play Store
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.projecttwo
-          releaseFiles: app-release.aab
-          track: production
+          bundle install
+          bundle update fastlane
+          
+      - name: Setup Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
+          
+      - name: Build and upload to TestFlight
+        run: |
+          bundle exec fastlane android beta
+          env: 
+             ANDROID_KEYSTORE_FILE: keystoreupload.keystore
+             ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+             ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+             ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+             
