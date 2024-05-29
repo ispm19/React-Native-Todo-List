@@ -3,7 +3,7 @@ name: Build Android app Fastlane now
 on:
   push:
     branches:
-      - "master"
+      - ""
 
 jobs:
   build:
@@ -90,7 +90,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION_NAME=$(echo ${{ steps.build_deploy.outputs.VERSION_NAME }})
-          VERSION_CODE=$(echo ${{ steps.build_deploy.outputs.VERSION_CODE }})
-          git tag -a "v${VERSION_NAME}-${VERSION_CODE}" -m "Release ${VERSION_NAME}-${VERSION_CODE}"
+          VERSION_NAME=${{ steps.build_deploy.outputs.VERSION_NAME }}
+          VERSION_CODE=${{ steps.build_deploy.outputs.VERSION_CODE }}
+          git tag -a "v$VERSION_NAME-$VERSION_CODE" -m "Release $VERSION_NAME-$VERSION_CODE"
           git push origin --tags
