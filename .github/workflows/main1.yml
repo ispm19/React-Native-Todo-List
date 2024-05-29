@@ -95,7 +95,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION_NAME=${{ steps.build_deploy.outputs.VERSION_NAME }}
-          VERSION_CODE=${{ steps.build_deploy.outputs.VERSION_CODE }}
-          git tag -a "v$VERSION_NAME-$VERSION_CODE" -m "Release $VERSION_NAME-$VERSION_CODE"
+          echo "VERSION_NAME=${{ env.VERSION_NAME }}"
+          echo "VERSION_CODE=${{ env.VERSION_CODE }}"
+          git tag -a "v${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}" -m "Release ${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}"
           git push origin --tags
