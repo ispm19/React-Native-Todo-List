@@ -66,7 +66,8 @@ jobs:
       - name: Setup Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
-          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" > android/testtodolist-423618-a33659dc86ef.json
+          cd android
+          printf '%s' "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" > testtodolist-423618-a33659dc86ef.json
     
       - name: Build and Deploy
         run: |
