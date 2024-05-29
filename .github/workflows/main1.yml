@@ -3,7 +3,7 @@ name: Build Android app Fastlane now
 on:
   push:
     branches:
-      - "master"
+      - ""
 
 jobs:
   build:
@@ -66,8 +66,7 @@ jobs:
       - name: Setup Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
-          cd android
-          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" > testtodolist-423618-a33659dc86ef.json
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" > android/testtodolist-423618-a33659dc86ef.json
     
       - name: Build and Deploy
         run: |
