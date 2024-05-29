@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "master"
+    paths-ignore:
+      - 'android/app/build.gradle' # Ignorar cambios en este archivo
 
 jobs:
   build:
