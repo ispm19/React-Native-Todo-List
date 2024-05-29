@@ -42,7 +42,7 @@ platform :android do
 
     # Subir a Google Play Store
     upload_to_play_store(
-      json_key: './android/testtodolist-423618-a33659dc86ef.json',
+      json_key: 'android/testtodolist-423618-a33659dc86ef.json',
       track: 'internal',
       release_status: 'draft',
       package_name: 'com.projecttwo.ispmgodrd'
