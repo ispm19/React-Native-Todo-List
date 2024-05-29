@@ -3,7 +3,7 @@ name: Build Android app Fastlane now
 on:
   push:
     branches:
-      - ""
+      - "master"
 
 jobs:
   build:
