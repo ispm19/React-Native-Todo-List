@@ -49,7 +49,10 @@ platform :android do
     )
 
     # Devolver la versión para usar en el tag
-    sh "echo ::set-output name=VERSION_NAME::#{version_name}"
-    sh "echo ::set-output name=VERSION_CODE::#{version_code}"
+    # Establecer salidas para GitHub Actions
+    File.open(ENV['GITHUB_OUTPUT'], 'a') do |file|
+      file.puts("VERSION_NAME=#{version_name}")
+      file.puts("VERSION_CODE=#{version_code}")
+    end
   end
 end
