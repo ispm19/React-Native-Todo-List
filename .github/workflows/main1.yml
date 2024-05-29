@@ -5,7 +5,7 @@ on:
     branches:
       - "master"
     paths-ignore:
-      - 'android/app/build.gradle' # Ignorar cambios en este archivo
+      - 'android/app/build.gradle' 
 
 jobs:
   build:
