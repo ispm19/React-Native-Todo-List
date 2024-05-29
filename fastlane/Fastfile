@@ -43,7 +43,7 @@ platform :android do
     # Subir a Google Play Store
     upload_to_play_store(
       track: 'internal',
-      status: 'draft',
+      release_status: 'draft',
       json_key: 'android/testtodolist-423618-a33659dc86ef.json',
       package_name: 'com.projecttwo.ispmgodrd'
     )
