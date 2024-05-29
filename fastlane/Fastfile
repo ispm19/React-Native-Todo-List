@@ -50,7 +50,7 @@ platform :android do
 
     # Devolver la versión para usar en el tag
     # Establecer salidas para GitHub Actions
-    File.open(ENV['GITHUB_OUTPUT'], 'a') do |file|
+    File.open(ENV['GITHUB_ENV'], 'a') do |file|
       file.puts("VERSION_NAME=#{version_name}")
       file.puts("VERSION_CODE=#{version_code}")
     end
