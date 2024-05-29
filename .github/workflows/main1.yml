@@ -66,14 +66,14 @@ jobs:
       - name: Setup Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
-          cd android
-          
+                    
       - name: create-json
         id: create-json
         uses: jsdaniell/create-json@v1.2.3
         with:
           name: "testtodolist-423618-a33659dc86ef.json"
           json: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          dir: android
             
       - name: Build and Deploy
         run: |
