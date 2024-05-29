@@ -49,12 +49,16 @@ platform :android do
     )
 
     # Commitear y pushear los cambios de versionCode y versionName
+    sh "echo 'Current directory:'"
+    sh "pwd"
+    sh "ls -la"
+
     sh "git config --global user.email 'you@example.com'"
     sh "git config --global user.name 'Your Name'"
-    sh "git add android/app/build.gradle"
+    sh "cd android && git add app/build.gradle"
     sh "git commit -m 'Increment version to #{version_name} (#{version_code}) [ci skip]'"
     sh "git push origin master"
-    
+
     # Devolver la versión para usar en el tag
     # Establecer salidas para GitHub Actions
     File.open(ENV['GITHUB_ENV'], 'a') do |file|
