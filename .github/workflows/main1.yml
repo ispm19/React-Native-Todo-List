@@ -1,5 +1,4 @@
-
-name: Build Android app Fastlane
+name: Build Android app Fastlane now
 
 on:
   push:
