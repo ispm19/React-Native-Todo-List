@@ -67,8 +67,8 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
           cd android
-          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" | jq . > testtodolist-423618-a33659dc86ef.json # Usa jq para guardar correctamente el archivo JSON
-    
+          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" | sed 's/\\n/\/g' > testtodolist-423618-a33659dc86ef.json
+          
       - name: Build and Deploy
         run: |
           bundle exec fastlane android deploy
