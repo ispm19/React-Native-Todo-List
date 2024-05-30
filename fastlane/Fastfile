@@ -56,3 +56,54 @@ platform :android do
     end
   end
 end
+
+platform :ios do
+  desc "Incrementar versión, firmar y desplegar a TestFlight"
+  lane :deploy do
+    # Establecer la página de códigos UTF-8
+    ENV['LANG'] = 'en_US.UTF-8'
+
+    # Incrementar build number
+    increment_build_number(
+      xcodeproj: "projectTwo.xcodeproj"
+    )
+
+    # Obtener version number
+    version_number = get_version_number(
+      xcodeproj: "projectTwo.xcodeproj"
+    )
+
+    build_number = latest_testflight_build_number(
+      app_identifier: "com.projecttwo.ispmgodrd"
+    ) + 1
+
+    # Configurar la firma y construir el ipa
+    gym(
+      workspace: "projectTwo.xcworkspace",
+      scheme: "projectTwo",
+      export_method: "app-store",
+      clean: true,
+      output_directory: "./build",
+      output_name: "projectTwo.ipa"
+    )
+
+    # Subir a TestFlight
+    pilot(
+      ipa: "./build/projectTwo.ipa",
+      app_identifier: "com.projecttwo.ispmgodrd"
+    )
+
+    # Commitear y pushear los cambios de build number
+    sh "git config --global user.email 'ispm19@hotmail.com'"
+    sh "git config --global user.name 'Isaias Perez'"
+    sh "git add projectTwo.xcodeproj/project.pbxproj"
+    sh "git commit -m 'Increment build number to #{build_number} [ci skip]'"
+    sh "git push origin master"
+
+    # Establecer salidas para GitHub Actions
+    File.open(ENV['GITHUB_ENV'], 'a') do |file|
+      file.puts("VERSION_NUMBER=#{version_number}")
+      file.puts("BUILD_NUMBER=#{build_number}")
+    end
+  end
+end

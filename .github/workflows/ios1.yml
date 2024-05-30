@@ -1,0 +1,68 @@
+name: Build and Deploy iOS app with Fastlane
+
+on:
+  push:
+    branches:
+      - "master"
+    paths-ignore:
+      - 'projectTwo.xcodeproj/project.pbxproj' # Ignorar cambios en este archivo
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+
+      - name: Install Fastlane
+        run: |
+          gem install fastlane -NV
+
+      - name: Install Bundler
+        run: |
+          gem install bundler
+          bundler -v
+          bundle update --bundler
+
+      - name: Bundle install
+        run: bundle install
+
+    #   - name: Setup Signing
+    #     run: |
+    #       mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+    #       echo "${{ secrets.APPLE_PROVISIONING_PROFILE }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/your_profile.mobileprovision
+    #       echo "${{ secrets.APPLE_CERTIFICATE }}" | base64 --decode > certificate.p12
+    #       security import certificate.p12 -P ${{ secrets.CERTIFICATE_PASSWORD }} -A
+    #       security create-keychain -p "" build.keychain
+    #       security default-keychain -s build.keychain
+    #       security unlock-keychain -p "" build.keychain
+    #       security set-keychain-settings -t 3600 -u build.keychain
+    #       security list-keychains -s build.keychain
+    #       security list-keychains -d user
+    #       security set-key-partition-list -S apple-tool:,apple: -s -k "" build.keychain
+
+      - name: Build and Deploy
+        id: build_deploy
+        run: |
+          bundle exec fastlane ios deploy
+
+      - name: Setup Git Identity
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
+      - name: Create Tag
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "VERSION_NUMBER=${{ env.VERSION_NUMBER }}"
+          echo "BUILD_NUMBER=${{ env.BUILD_NUMBER }}"
+          git tag -a "v${{ env.VERSION_NUMBER }}-${{ env.BUILD_NUMBER }}" -m "Release ${{ env.VERSION_NUMBER }}-${{ env.BUILD_NUMBER }}"
+          git push origin --tags
