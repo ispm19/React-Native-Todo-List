@@ -65,12 +65,12 @@ platform :ios do
 
     # Incrementar build number
     increment_build_number(
-      xcodeproj: "projectTwo.xcodeproj"
+      xcodeproj: "ios/projectTwo.xcodeproj"
     )
 
     # Obtener version number
     version_number = get_version_number(
-      xcodeproj: "projectTwo.xcodeproj"
+      xcodeproj: "ios/projectTwo.xcodeproj"
     )
 
     build_number = latest_testflight_build_number(
@@ -79,7 +79,7 @@ platform :ios do
 
     # Configurar la firma y construir el ipa
     gym(
-      workspace: "projectTwo.xcworkspace",
+      workspace: "ios/projectTwo.xcworkspace",
       scheme: "projectTwo",
       export_method: "app-store",
       clean: true,
