@@ -3,7 +3,7 @@ name: Build Android app Fastlane now
 on:
   push:
     branches:
-      - ""
+      - "master"
     paths-ignore:
       - 'android/app/build.gradle' 
 
@@ -67,7 +67,7 @@ jobs:
         
       - name: Setup Keystore
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/keystoreupload.keystore
                     
       - name: create-json
         id: create-json
