@@ -67,8 +67,6 @@ jobs:
         
       - name: Setup Keystore
         run: |
-          cd android
-          cd app
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
                     
       - name: create-json
