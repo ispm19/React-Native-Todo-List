@@ -3,7 +3,7 @@ name: Build Android app Fastlane now
 on:
   push:
     branches:
-      - ""
+      - "master"
     paths-ignore:
       - 'android/app/build.gradle' 
 
@@ -76,7 +76,14 @@ jobs:
           name: "testtodolist-423618-a33659dc86ef.json"
           json: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
           dir: android
-            
+          
+      - name: Export Environment Variables
+        run: |
+          echo "MYAPP_UPLOAD_STORE_FILE=keystoreupload.keystore" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> $GITHUB_ENV 
+          
       - name: Build and Deploy
         run: |
           bundle exec fastlane android deploy
