@@ -3,7 +3,7 @@ name: Build and Deploy iOS app with Fastlane
 on:
   push:
     branches:
-      - "master"
+      - ""
     paths-ignore:
       - 'projectTwo.xcodeproj/project.pbxproj' # Ignorar cambios en este archivo
 
