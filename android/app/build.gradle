@@ -22,7 +22,7 @@ android {
         versionCode 16
         versionName "1.2"
     }
-    signingConfigs {
+  /*  signingConfigs {
         release {
             if (System.getenv("MYAPP_UPLOAD_STORE_FILE") != null) {
                 storeFile file(System.getenv("MYAPP_UPLOAD_STORE_FILE"))
@@ -37,7 +37,7 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-    }
+    }*/
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
