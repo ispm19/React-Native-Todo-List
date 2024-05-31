@@ -1,0 +1,103 @@
+name: Build Android app Fastlane now
+
+on:
+  push:
+    branches:
+      - """"
+    paths-ignore:
+      - 'android/app/build.gradle' 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+
+      - name: Run Yarn Install
+        run: |
+          npm i -g corepack
+          yarn install
+          
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+          
+      - name: Install Android SDK
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y wget unzip
+          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
+          mkdir -p $ANDROID_HOME/cmdline-tools
+          unzip commandlinetools-linux-8092744_latest.zip -d $ANDROID_HOME/cmdline-tools
+          mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/tools
+          yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --licenses
+          yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "platform-tools" "platforms;android-30"
+  
+      - name: Install Fastlane
+        run: |
+          gem install fastlane -NV
+          
+      - name: Install Bundler
+        run: |
+          gem install bundler
+          bundler -v
+          bundle update --bundler
+          
+      - name: Bundle install
+        run: bundle install
+        
+      - name: Setup Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
+                    
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.3
+        with:
+          name: "testtodolist-423618-a33659dc86ef.json"
+          json: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          dir: android
+            
+      - name: Build and Deploy
+        run: |
+          bundle exec fastlane android deploy
+        env:
+          JSON_KEY: "./android/testtodolist-423618-a33659dc86ef.json"
+          MYAPP_UPLOAD_STORE_FILE: keystoreupload.keystore
+          MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+      - name: Setup Git Identity
+        run: |
+          git config --global user.email "ispm19@hotmail.com"
+          git config --global user.name "Isaias"
+          
+      - name: Create Tag
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "VERSION_NAME=${{ env.VERSION_NAME }}"
+          echo "VERSION_CODE=${{ env.VERSION_CODE }}"
+          git tag -a "v${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}" -m "Release ${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}"
+          git push origin --tags
