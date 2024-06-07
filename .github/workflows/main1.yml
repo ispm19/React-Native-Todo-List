@@ -51,20 +51,16 @@ jobs:
           mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/tools
           yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --licenses
           yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "platform-tools" "platforms;android-30"
-  
-      - name: Install Fastlane
-        run: |
-          gem install fastlane -NV
           
       - name: Install Bundler
         run: gem install bundler -v 2.4.22
           
       - name: Bundle install
         run: bundle install
-        
+      
       - name: Setup Keystore
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload
                     
       - name: create-json
         id: create-json
@@ -76,7 +72,7 @@ jobs:
           
       - name: Export Environment Variables
         run: |
-          echo "MYAPP_UPLOAD_STORE_FILE=keystoreupload.keystore" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_STORE_FILE=keystoreupload" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> $GITHUB_ENV 
