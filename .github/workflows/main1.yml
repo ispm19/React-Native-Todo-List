@@ -51,10 +51,6 @@ jobs:
           mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/tools
           yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --licenses
           yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager "platform-tools" "platforms;android-30"
-  
-      - name: Install Fastlane
-        run: |
-          gem install fastlane -NV
           
       - name: Install Bundler
         run: |
