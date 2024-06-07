@@ -25,6 +25,19 @@ Incrementar versión, firmar y desplegar a Google Play Store
 
 ----
 
+
+## iOS
+
+### ios deploy
+
+```sh
+[bundle exec] fastlane ios deploy
+```
+
+Incrementar versión, firmar y desplegar a TestFlight
+
+----
+
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 
 More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).

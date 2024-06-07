@@ -93,13 +93,6 @@ platform :ios do
       app_identifier: "com.projecttwo.ispmgodrd"
     )
 
-    # Commitear y pushear los cambios de build number
-    sh "git config --global user.email 'ispm19@hotmail.com'"
-    sh "git config --global user.name 'Isaias Perez'"
-    sh "git add projectTwo.xcodeproj/project.pbxproj"
-    sh "git commit -m 'Increment build number to #{build_number} [ci skip]'"
-    sh "git push origin master"
-
     # Establecer salidas para GitHub Actions
     File.open(ENV['GITHUB_ENV'], 'a') do |file|
       file.puts("VERSION_NUMBER=#{version_number}")
