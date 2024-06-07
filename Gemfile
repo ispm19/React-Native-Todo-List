@@ -6,7 +6,7 @@ ruby ">= 2.6.10"
 
 gem 'cocoapods', '~> 1.13'
 gem 'activesupport', '>= 6.1.7.3', '< 7.1.0'
-gem "bundler", "~> 2.5"
+
 gem 'fastlane-plugin-versioning'
 gem "fastlane-plugin-versioning_android"
 
