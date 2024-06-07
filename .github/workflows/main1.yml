@@ -65,6 +65,9 @@ jobs:
       - name: Bundle install
         run: bundle install
       
+      - name: Setup Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
                     
       - name: create-json
         id: create-json
