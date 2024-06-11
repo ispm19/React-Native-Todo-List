@@ -92,7 +92,8 @@ platform :android do
       }
     )
 
-    apk_file = "./android/app/build/outputs/bundle/release/app-release.apk" 
+    apk_file = "./android/app/build/outputs/apk/release/app-release.apk" 
+       
 
     aws_s3(
       access_key: ENV['AWS_ACCESS_KEY_ID'],
