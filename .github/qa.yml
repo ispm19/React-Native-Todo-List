@@ -3,7 +3,7 @@ name: Build Android app Fastlane now
 on:
   push:
     branches:
-      - ""
+      - "MASTER"
     paths-ignore:
       - 'android/app/build.gradle' 
 
@@ -62,42 +62,39 @@ jobs:
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload
                     
-      - name: create-json
-        id: create-json
-        uses: jsdaniell/create-json@v1.2.3
-        with:
-          name: "testtodolist-423618-a33659dc86ef.json"
-          json: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          dir: android
-          
       - name: Export Environment Variables
         run: |
           echo "MYAPP_UPLOAD_STORE_FILE=keystoreupload" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> $GITHUB_ENV 
-          
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}" >> $GITHUB_ENV
+
       - name: Build and Deploy
         run: |
-          bundle exec fastlane android deploy
+          bundle exec fastlane android upload_to_qa_s3
         env:
-          JSON_KEY: "./android/testtodolist-423618-a33659dc86ef.json"
           MYAPP_UPLOAD_STORE_FILE: keystoreupload.keystore
           MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
 
-      - name: Setup Git Identity
-        run: |
-          git config --global user.email "ispm19@hotmail.com"
-          git config --global user.name "Isaias"
+      # - name: Setup Git Identity
+      #   run: |
+      #     git config --global user.email "ispm19@hotmail.com"
+      #     git config --global user.name "Isaias"
         
-      - name: Create Tag
-        if: success()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "VERSION_NAME=${{ env.VERSION_NAME }}"
-          echo "VERSION_CODE=${{ env.VERSION_CODE }}"
-          git tag -a "v${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}" -m "Release ${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}"
-          git push origin --tags
+      # - name: Create Tag
+      #   if: success()
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     echo "VERSION_NAME=${{ env.VERSION_NAME }}"
+      #     echo "VERSION_CODE=${{ env.VERSION_CODE }}"
+      #     git tag -a "v${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}" -m "Release ${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}"
+      #     git push origin --tags

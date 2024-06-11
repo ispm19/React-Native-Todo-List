@@ -55,6 +55,59 @@ platform :android do
       file.puts("VERSION_CODE=#{version_code}")
     end
   end
+
+  desc "Upload QA version to S3"
+  lane :upload_to_qa_s3 do
+    ENV['LANG'] = 'en_US.UTF-8'
+
+    version_code = android_get_version_code(
+      gradle_file: "./android/app/build.gradle"
+    ).to_i + 1
+
+    version_name = android_get_version_name(
+      gradle_file: "./android/app/build.gradle"
+    ).split('.').tap do |parts|
+      parts[-1] = (parts.last.to_i + 1).to_s
+    end.join('.')
+
+    android_set_version_code(
+      gradle_file: "./android/app/build.gradle",
+      version_code: version_code
+    )
+
+    android_set_version_name(
+      gradle_file: "./android/app/build.gradle",
+      version_name: version_name
+    )
+
+    gradle(
+      task: "assemble",
+      build_type: "Release",
+      project_dir: "android",  # especifica el directorio donde se encuentra gradlew
+      properties: {
+        "android.injected.signing.store.file" => ENV['MYAPP_UPLOAD_STORE_FILE'],
+        "android.injected.signing.store.password" => ENV['MYAPP_UPLOAD_STORE_PASSWORD'],
+        "android.injected.signing.key.alias" => ENV['MYAPP_UPLOAD_KEY_ALIAS'],
+        "android.injected.signing.key.password" => ENV['MYAPP_UPLOAD_KEY_PASSWORD']
+      }
+    )
+
+    apk_file = "./android/app/build/outputs/bundle/release/app-release.apk" 
+
+    aws_s3(
+      access_key: ENV['AWS_ACCESS_KEY_ID'],
+      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+      bucket: ENV['AWS_S3_BUCKET'],
+      region: 'us-east-1', # Cambia esto según la región de tu bucket
+      apk: apk_file,
+      acl: 'private', # o 'private' según tus necesidades
+    )
+
+    File.open(ENV['GITHUB_ENV'], 'a') do |file|
+      file.puts("QA_VERSION_NAME=#{version_name}")
+      file.puts("QA_VERSION_CODE=#{version_code}")
+    end
+  end
 end
 
 platform :ios do
