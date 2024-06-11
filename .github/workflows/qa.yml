@@ -60,7 +60,7 @@ jobs:
       
       - name: Setup Keystore
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystoreupload.keystore
                     
       - name: Export Environment Variables
         run: |
