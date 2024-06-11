@@ -1,9 +1,9 @@
-name: Build Android app Fastlane now
+name: Qa build and deploy
 
 on:
   push:
     branches:
-      - "MASTER"
+      - "master"
     paths-ignore:
       - 'android/app/build.gradle' 
 
