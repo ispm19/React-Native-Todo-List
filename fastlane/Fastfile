@@ -110,7 +110,7 @@ platform :android do
       region: 'us-east-1',
       path: "v/app-release.apk",  # Ruta en S3
       source: apk_file,
-      acl: nil
+      acl: ''
     )
 
     File.open(ENV['GITHUB_ENV'], 'a') do |file|
