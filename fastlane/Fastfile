@@ -113,10 +113,10 @@ platform :android do
       acl: ''
     )
 
-    # File.open(ENV['GITHUB_ENV'], 'a') do |file|
-    #   file.puts("QA_VERSION_NAME=#{version_name}")
-    #   file.puts("QA_VERSION_CODE=#{version_code}")
-    # end
+     File.open(ENV['GITHUB_ENV'], 'a') do |file|
+       file.puts("QA_VERSION_NAME=#{version_name}")
+       file.puts("QA_VERSION_CODE=#{version_code}")
+     end
   end
 end
 
