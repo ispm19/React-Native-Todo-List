@@ -3,7 +3,7 @@ name: Build Android app Fastlane now
 on:
   push:
     branches:
-      - ""
+      - "master"
     paths-ignore:
       - 'android/app/build.gradle' 
 
