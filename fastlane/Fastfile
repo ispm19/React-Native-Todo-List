@@ -60,25 +60,25 @@ platform :android do
   lane :upload_to_qa_s3 do
     ENV['LANG'] = 'en_US.UTF-8'
 
-    version_code = android_get_version_code(
-      gradle_file: "./android/app/build.gradle"
-    ).to_i + 1
+    # version_code = android_get_version_code(
+    #   gradle_file: "./android/app/build.gradle"
+    # ).to_i + 1
 
-    version_name = android_get_version_name(
-      gradle_file: "./android/app/build.gradle"
-    ).split('.').tap do |parts|
-      parts[-1] = (parts.last.to_i + 1).to_s
-    end.join('.')
+    # version_name = android_get_version_name(
+    #   gradle_file: "./android/app/build.gradle"
+    # ).split('.').tap do |parts|
+    #   parts[-1] = (parts.last.to_i + 1).to_s
+    # end.join('.')
 
-    android_set_version_code(
-      gradle_file: "./android/app/build.gradle",
-      version_code: version_code
-    )
+    # android_set_version_code(
+    #   gradle_file: "./android/app/build.gradle",
+    #   version_code: version_code
+    # )
 
-    android_set_version_name(
-      gradle_file: "./android/app/build.gradle",
-      version_name: version_name
-    )
+    # android_set_version_name(
+    #   gradle_file: "./android/app/build.gradle",
+    #   version_name: version_name
+    # )
 
     gradle(
       task: "assemble",
@@ -109,7 +109,7 @@ platform :android do
       bucket: ENV['AWS_S3_BUCKET'],
       region: 'us-east-1',
       local_file: apk_file,
-      target_folder: "v#{version}"
+      target_folder: "v#"
     )
 
     File.open(ENV['GITHUB_ENV'], 'a') do |file|
