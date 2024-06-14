@@ -108,7 +108,7 @@ platform :android do
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
       bucket: ENV['AWS_S3_BUCKET'],
       region: 'us-east-1',
-      local_file: apk_file,
+      apk: apk_file,
       target_folder: "v#"
     )
 
