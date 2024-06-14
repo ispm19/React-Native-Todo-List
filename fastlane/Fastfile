@@ -95,13 +95,21 @@ platform :android do
     apk_file = "./android/app/build/outputs/apk/release/app-release.apk " 
        
 
+    # aws_s3(
+    #   access_key: ENV['AWS_ACCESS_KEY_ID'],
+    #   secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+    #   bucket: ENV['AWS_S3_BUCKET'],
+    #   region: 'us-east-1', # Cambia esto según la región de tu bucket
+    #   apk: apk_file,
+    #   acl: 'private', # o 'private' según tus necesidades
+    # )
     aws_s3(
       access_key: ENV['AWS_ACCESS_KEY_ID'],
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
       bucket: ENV['AWS_S3_BUCKET'],
-      region: 'us-east-1', # Cambia esto según la región de tu bucket
-      apk: apk_file,
-      acl: 'private', # o 'private' según tus necesidades
+      region: 'us-east-1',
+      local_file: apk_file,
+      target_folder: "v#{version}"
     )
 
     File.open(ENV['GITHUB_ENV'], 'a') do |file|
