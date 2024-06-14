@@ -107,7 +107,7 @@ platform :android do
       access_key: ENV['AWS_ACCESS_KEY_ID'],
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
       bucket: ENV['AWS_S3_BUCKET'],
-      region: us-east-1,
+      region: 'us-east-1',
       path: "v/app-release.apk",  # Ruta en S3
       source: apk_file
     )
