@@ -62,7 +62,7 @@ jobs:
                     
       - name: Export Environment Variables
         run: |
-          echo "MYAPP_UPLOAD_STORE_FILE=keystoreupload" >> $GITHUB_ENV
+          echo "MYAPP_UPLOAD_STORE_FILE=keystoreupload.keystore" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> $GITHUB_ENV
           echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}" >> $GITHUB_ENV 
