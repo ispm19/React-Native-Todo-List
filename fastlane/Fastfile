@@ -6,6 +6,10 @@ platform :android do
     # Establecer la página de códigos UTF-8
     ENV['LANG'] = 'en_US.UTF-8'
 
+    version_code = android_get_version_code(
+      gradle_file: "./android/app/build.gradle"
+    ).to_i
+
     # Obtener e incrementar versionCode y versionName
     # version_code = android_get_version_code(
     #   gradle_file: "android/app/build.gradle"
@@ -51,7 +55,6 @@ platform :android do
     # Devolver la versión para usar en el tag
     # Establecer salidas para GitHub Actions
     File.open(ENV['GITHUB_ENV'], 'a') do |file|
-      file.puts("VERSION_NAME=#{version_name}")
       file.puts("VERSION_CODE=#{version_code}")
     end
   end
