@@ -10,21 +10,21 @@ platform :android do
        gradle_file: "android/app/build.gradle"
      ).to_i + 1
 
-    #  version_name = android_get_version_name(
-    #    gradle_file: "android/app/build.gradle"
-    #  ).split('.').tap do |parts|
-    #    parts[-1] = (parts.last.to_i + 1).to_s
-    #  end.join('.')
+     version_name = android_get_version_name(
+       gradle_file: "android/app/build.gradle"
+     ).split('.').tap do |parts|
+       parts[-1] = (parts.last.to_i + 1).to_s
+     end.join('.')
 
      android_set_version_code(
        gradle_file: "android/app/build.gradle",
        version_code: version_code
      )
 
-    #  android_set_version_name(
-    #    gradle_file: "android/app/build.gradle",
-    #    version_name: version_name
-    #  )
+     android_set_version_name(
+       gradle_file: "android/app/build.gradle",
+       version_name: version_name
+     )
 
     # Configurar la firma y construir el bundle
     gradle(
