@@ -113,53 +113,53 @@ platform :android do
       acl: ''
     )
 
-     File.open(ENV['GITHUB_ENV'], 'a') do |file|
-       file.puts("QA_VERSION_NAME=#{version_name}")
-       file.puts("QA_VERSION_CODE=#{version_code}")
-     end
+    #  File.open(ENV['GITHUB_ENV'], 'a') do |file|
+    #    file.puts("QA_VERSION_NAME=#{version_name}")
+    #    file.puts("QA_VERSION_CODE=#{version_code}")
+    #  end
   end
 end
 
-platform :ios do
-  desc "Incrementar versión, firmar y desplegar a TestFlight"
-  lane :deploy do
-    # Establecer la página de códigos UTF-8
-    ENV['LANG'] = 'en_US.UTF-8'
+# platform :ios do
+#   desc "Incrementar versión, firmar y desplegar a TestFlight"
+#   lane :deploy do
+#     # Establecer la página de códigos UTF-8
+#     ENV['LANG'] = 'en_US.UTF-8'
 
-    # Incrementar build number
-    increment_build_number(
-      xcodeproj: "ios/projectTwo.xcodeproj"
-    )
+#     # Incrementar build number
+#     increment_build_number(
+#       xcodeproj: "ios/projectTwo.xcodeproj"
+#     )
 
-    # Obtener version number
-    version_number = get_version_number(
-      xcodeproj: "ios/projectTwo.xcodeproj"
-    )
+#     # Obtener version number
+#     version_number = get_version_number(
+#       xcodeproj: "ios/projectTwo.xcodeproj"
+#     )
 
-    build_number = latest_testflight_build_number(
-      app_identifier: "com.projecttwo.ispmgodrd"
-    ) + 1
+#     build_number = latest_testflight_build_number(
+#       app_identifier: "com.projecttwo.ispmgodrd"
+#     ) + 1
 
-    # Configurar la firma y construir el ipa
-    gym(
-      workspace: "ios/projectTwo.xcworkspace",
-      scheme: "projectTwo",
-      export_method: "app-store",
-      clean: true,
-      output_directory: "./build",
-      output_name: "projectTwo.ipa"
-    )
+#     # Configurar la firma y construir el ipa
+#     gym(
+#       workspace: "ios/projectTwo.xcworkspace",
+#       scheme: "projectTwo",
+#       export_method: "app-store",
+#       clean: true,
+#       output_directory: "./build",
+#       output_name: "projectTwo.ipa"
+#     )
 
-    # Subir a TestFlight
-    pilot(
-      ipa: "./build/projectTwo.ipa",
-      app_identifier: "com.projecttwo.ispmgodrd"
-    )
+#     # Subir a TestFlight
+#     pilot(
+#       ipa: "./build/projectTwo.ipa",
+#       app_identifier: "com.projecttwo.ispmgodrd"
+#     )
 
-    # Establecer salidas para GitHub Actions
-    File.open(ENV['GITHUB_ENV'], 'a') do |file|
-      file.puts("VERSION_NUMBER=#{version_number}")
-      file.puts("BUILD_NUMBER=#{build_number}")
-    end
-  end
-end
+#     # Establecer salidas para GitHub Actions
+#     File.open(ENV['GITHUB_ENV'], 'a') do |file|
+#       file.puts("VERSION_NUMBER=#{version_number}")
+#       file.puts("BUILD_NUMBER=#{build_number}")
+#     end
+#   end
+# end
