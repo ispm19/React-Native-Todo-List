@@ -8,7 +8,7 @@ platform :android do
 
      version_code = android_get_version_code(
        gradle_file: "android/app/build.gradle"
-     ).to_i 
+     ).to_i + 1
 
     #  version_name = android_get_version_name(
     #    gradle_file: "android/app/build.gradle"
