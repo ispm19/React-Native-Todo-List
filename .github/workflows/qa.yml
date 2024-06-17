@@ -1,7 +1,9 @@
 name: Qa build and deploy
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - "master"
 
 jobs:
   build:
