@@ -3,7 +3,7 @@ name: Qa build and deploy
 on:
   push:
     branches:
-      - ""
+      - "master"
 
 jobs:
   build:
