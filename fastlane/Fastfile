@@ -102,15 +102,15 @@ platform :android do
     #   apk: apk_file,
     #   acl: 'private', # o 'private' según tus necesidades
     # )
-    aws_s3(
-      access_key: ENV['AWS_ACCESS_KEY_ID'],
-      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
-      bucket: ENV['AWS_S3_BUCKET'],
-      region: 'us-east-1',
-      path: "v/",  # Ruta en S3
-      source: apk_file,
-      acl: ''
-    )
+          aws_s3(
+            access_key: ENV['AWS_ACCESS_KEY_ID'],
+            secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+            bucket: ENV['AWS_S3_BUCKET'],
+            region: 'us-east-1',
+            path: "v/",  # Ruta en S3
+            source: apk_file,
+            acl: ''
+          )
 
     #  File.open(ENV['GITHUB_ENV'], 'a') do |file|
     #    file.puts("QA_VERSION_NAME=#{version_name}")
