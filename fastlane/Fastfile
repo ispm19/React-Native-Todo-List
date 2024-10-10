@@ -37,20 +37,22 @@ platform :android do
       }
     )
 
-    # Subir a Google Play Store
-    upload_to_play_store(
-      json_key: 'android/testtodolist-423618-a33659dc86ef.json',
-      track: 'internal',
-      release_status: 'draft',
-      package_name: 'com.projecttwo.ispmgodrd'
-    )
-
     # Devolver la versión para usar en el tag
     # Establecer salidas para GitHub Actions
     File.open(ENV['GITHUB_ENV'], 'a') do |file|
       file.puts("VERSION_NAME=#{version_name}")
       file.puts("VERSION_CODE=#{version_code}")
     end
+
+    # # Subir a Google Play Store
+    # upload_to_play_store(
+    #   json_key: 'android/testtodolist-423618-a33659dc86ef.json',
+    #   track: 'internal',
+    #   release_status: 'draft',
+    #   package_name: 'com.projecttwo.ispmgodrd'
+    # )
+
+
   end
 
   desc "Upload QA version to S3"
