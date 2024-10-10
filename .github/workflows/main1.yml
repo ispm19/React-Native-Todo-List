@@ -116,4 +116,4 @@ jobs:
           branch: version-update
           title: "Auto Increment Version Code and Version Name"
           body: "This PR updates the version code and version name automatically."
-          base: main # Cambia esto por la rama protegida que estés usando
+          base: master # Cambia esto por la rama protegida que estés usando
