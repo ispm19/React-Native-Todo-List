@@ -109,4 +109,11 @@ jobs:
           git tag -a "v${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}" -m "Release ${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}"
           git push origin --tags
 
-
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: version-update
+          title: "Auto Increment Version Code and Version Name"
+          body: "This PR updates the version code and version name automatically."
+          base: main # Cambia esto por la rama protegida que estés usando
