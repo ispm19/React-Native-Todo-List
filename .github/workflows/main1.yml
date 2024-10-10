@@ -93,13 +93,14 @@ jobs:
           git checkout -b version-update
           git add android/app/build.gradle
           git commit -m "Increment version code and version name [skip ci]"
-        
+      
+      - name: Pull latest changes from version-update with rebase
+        run: git pull --rebase origin version-update
+
       - name: Push changes to a new branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git pull origin version-update
-          git push origin version-update
+        run: git push origin version-update
 
       - name: Create Tag
         if: success()
