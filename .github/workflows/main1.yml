@@ -1,9 +1,7 @@
 name: Build Android app Fastlane now
 
 on:
-  push:
-    branches:
-      - "master"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -89,7 +87,18 @@ jobs:
         run: |
           git config --global user.email "ispm19@hotmail.com"
           git config --global user.name "Isaias"
+
+      - name: Create a new branch for changes
+        run: |
+          git checkout -b version-update
+          git add android/app/build.gradle
+          git commit -m "Increment version code and version name [skip ci]"
         
+      - name: Push changes to a new branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git push origin version-update
+
       - name: Create Tag
         if: success()
         env:
@@ -99,3 +108,5 @@ jobs:
           echo "VERSION_CODE=${{ env.VERSION_CODE }}"
           git tag -a "v${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}" -m "Release ${{ env.VERSION_NAME }}-${{ env.VERSION_CODE }}"
           git push origin --tags
+
+
