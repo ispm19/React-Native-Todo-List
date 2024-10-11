@@ -99,10 +99,8 @@ jobs:
           git add .
           git commit -m "Auto-committing local changes before rebase"
         
-      - name: Pull latest changes from version-update with merge strategy
-        run: |
-          git fetch origin
-          git merge origin/version-update -X theirs || true
+      - name: Pull latest changes from version-update with merge
+        run: git pull origin version-update
         
       - name: Push changes to version-update branch
         env:
