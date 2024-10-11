@@ -10,6 +10,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - name: Set up Git LFS
+        run: git lfs install
 
       - name: Install Java
         uses: actions/setup-java@v3
