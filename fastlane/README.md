@@ -23,18 +23,13 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Incrementar versión, firmar y desplegar a Google Play Store
 
-----
-
-
-## iOS
-
-### ios deploy
+### android upload_to_qa_s3
 
 ```sh
-[bundle exec] fastlane ios deploy
+[bundle exec] fastlane android upload_to_qa_s3
 ```
 
-Incrementar versión, firmar y desplegar a TestFlight
+Upload QA version to S3
 
 ----
 
