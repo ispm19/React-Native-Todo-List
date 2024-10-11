@@ -67,3 +67,4 @@ yarn-error.log
 
 # React Native APKs
 android/app/build/outputs/apk/release/*.apk
+commandlinetools-linux-8092744_latest.zip
