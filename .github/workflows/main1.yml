@@ -112,6 +112,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: git push origin version-update
 
+      - name: Add large files to .gitignore
+        run: |
+          echo "commandlinetools-linux-8092744_latest.zip" >> .gitignore
+          git add .gitignore
+          git commit -m "Add large file to .gitignore [skip ci]"
+          git push origin version-update
+
       - name: Create Tag
         if: success()
         env:
